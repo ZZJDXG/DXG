@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.yonyong.dao.PositionDao">
+
+    <!-- 查询全部职级 -->
+    <select id="queryPositions" resultType="cn.yonyong.pojo.Position">
+        SELECT
+            PosID       AS positionID,
+            PosName     AS positionName,
+            UpdatedTime AS updatedTime
+        FROM positions
+        ORDER BY PosID ASC
+    </select>
+
+    <!-- 查重：同名 -->
+    <select id="countByPosName" resultType="int">
+        SELECT COUNT(1)
+        FROM positions
+        WHERE PosName = #{positionName}
+    </select>
+
+    <!-- 查重：同ID -->
+    <select id="countByPosId" resultType="int">
+        SELECT COUNT(1)
+        FROM positions
+        WHERE PosID = #{positionID}
+    </select>
+
+    <!-- 新增职级（PosID 不是自增：必须传 positionId） -->
+    <insert id="insertPosition" parameterType="cn.yonyong.pojo.Position">
+        INSERT INTO positions (PosName, UpdatedTime)
+        VALUES ( #{positionName}, CURRENT_TIMESTAMP)
+    </insert>
+
+  <!-- 删除职级 -->
+  <delete id="deletePositionById">
+      DELETE FROM positions
+      WHERE PosID = #{positionID}
+  </delete>
+
+  <!-- 更新查重：同名但排除当前ID -->
+  <select id="countByPosNameExcludeId" resultType="int">
+      <![CDATA[
+        SELECT COUNT(1)
+        FROM positions
+        WHERE PosName = #{positionName}
+          AND PosID <> #{positionID}
+      ]]>
+  </select>
+
+  <!-- 更新职级 + 自动更新时间 -->
+  <update id="updatePosition" parameterType="cn.yonyong.pojo.Position">
+      <![CDATA[
+        UPDATE positions
+        SET
+          PosName = #{positionName},
+          UpdatedTime = CURRENT_TIMESTAMP
+        WHERE PosID = #{positionID}
+      ]]>
+  </update>
+
+</mapper>

@@ -1,0 +1,6 @@
+本次修改说明：
+1. 部门表新增迟到规则字段：LateStartTime、GraceMinutes、LateEnabled。
+2. Department 模块新增/更新接口已支持这三个字段。
+3. AttendanceRecordServiceImpl 的上班打卡迟到判断，已改为按员工 StaffDept 查询 Departments 表。
+4. 原 AttendanceRules.sql 已改为说明文件，不再单独建表。
+5. 已删除 src/main/resources/mapper/AttendanceRuleMapper.xml，避免旧规则仍被加载。

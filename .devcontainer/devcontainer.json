@@ -1,0 +1,62 @@
+{
+  "name": "DXG Full Stack",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "workspace",
+  "workspaceFolder": "/workspace",
+  "shutdownAction": "stopCompose",
+  "forwardPorts": [
+    5173,
+    8080
+  ],
+  "portsAttributes": {
+    "5173": {
+      "label": "Frontend",
+      "onAutoForward": "openBrowser"
+    },
+    "8080": {
+      "label": "Spring Boot API",
+      "onAutoForward": "notify"
+    }
+  },
+  "hostRequirements": {
+    "cpus": 4,
+    "memory": "8gb",
+    "storage": "32gb"
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "8",
+      "installMaven": "true"
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20"
+    }
+  },
+  "containerEnv": {
+    "TZ": "Asia/Shanghai"
+  },
+  "remoteEnv": {
+    "SERVER_PORT": "8080",
+    "BACKEND_PORT": "8080",
+    "FRONTEND_PORT": "5173",
+    "SPRING_DATASOURCE_DRUID_URL": "jdbc:mysql://mysql:3306/oa?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true&useAffectedRows=true",
+    "SPRING_DATASOURCE_DRUID_USERNAME": "root",
+    "SPRING_DATASOURCE_DRUID_PASSWORD": "20040329hjsfw",
+    "SPRING_REDIS_HOST": "redis",
+    "SPRING_REDIS_PORT": "6379"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "vscjava.vscode-java-pack",
+        "vmware.vscode-spring-boot",
+        "Vue.volar",
+        "dbaeumer.vscode-eslint"
+      ],
+      "settings": {
+        "maven.terminal.useJavaHome": true
+      }
+    }
+  },
+  "postCreateCommand": "bash scripts/codespaces-post-create.sh"
+}

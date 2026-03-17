@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.yonyong.dao.AttendanceRecordDao">
+
+    <!-- 查今天最新一条“未下班”的记录 -->
+    <select id="queryLatestTodayOpenRecord" resultType="cn.yonyong.pojo.AttendanceRecord">
+        SELECT
+            StaffID          AS staffID,
+            WorkStartTime    AS workStartTime,
+            WorkEndTime      AS workEndTime,
+            AttendanceStatus AS attendanceStatus,
+            LocatedSpot      AS locatedSpot
+        FROM AttendanceRecords
+        WHERE StaffID = #{staffID}
+          AND DATE(WorkStartTime) = CURDATE()
+          AND WorkEndTime IS NULL
+        ORDER BY WorkStartTime DESC
+        LIMIT 1
+    </select>
+
+    <!-- 上班打卡：插入 -->
+    <insert id="insertCheckIn" parameterType="cn.yonyong.pojo.AttendanceRecord">
+        INSERT INTO AttendanceRecords (
+            StaffID, WorkStartTime, AttendanceStatus, LocatedSpot
+        ) VALUES (
+            #{staffID}, #{workStartTime}, #{attendanceStatus}, #{locatedSpot}
+        )
+    </insert>
+
+    <!-- 下班打卡：更新今天最新一条未下班记录 -->
+    <update id="updateCheckOut" parameterType="cn.yonyong.pojo.AttendanceRecord">
+        UPDATE AttendanceRecords
+        SET WorkEndTime = #{workEndTime},
+            AttendanceStatus = #{attendanceStatus},
+            LocatedSpot = #{locatedSpot}
+        WHERE StaffID = #{staffID}
+          AND WorkStartTime = #{workStartTime}
+    </update>
+
+</mapper>

@@ -1,0 +1,3 @@
+-- 迟到规则已经合并到 Departments 表中。
+-- 请使用 sql/department.sql 中的 LateStartTime、GraceMinutes、LateEnabled 字段。
+-- 这里不再单独创建 AttendanceRules 表。

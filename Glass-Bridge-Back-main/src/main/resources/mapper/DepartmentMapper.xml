@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.yonyong.dao.DepartmentDao">
+
+    <!-- 获取菜单栏：返回 SupportChannels -->
+    <select id="queryDepartmentById" resultType="java.lang.String">
+        SELECT SupportChannels
+        FROM Departments
+        WHERE DeptID = #{departmentID}
+    </select>
+
+    <!-- 按部门ID查询完整信息（迟到规则会用到） -->
+    <select id="queryDepartmentDetailById" resultType="cn.yonyong.pojo.Department">
+        SELECT
+            DeptID AS departmentID,
+            DeptName AS departmentName,
+            SupportChannels AS supportChannels,
+            DATE_FORMAT(LateStartTime, '%H:%i:%s') AS lateStartTime,
+            GraceMinutes AS graceMinutes,
+            LateEnabled AS lateEnabled
+        FROM Departments
+        WHERE DeptID = #{departmentID}
+    </select>
+
+    <!-- 查询全部部门 -->
+    <select id="queryDepartments" resultType="cn.yonyong.pojo.Department">
+        SELECT
+            DeptID          AS departmentID,
+            DeptName        AS departmentName,
+            SupportChannels AS supportChannels,
+            DATE_FORMAT(LateStartTime, '%H:%i:%s') AS lateStartTime,
+            GraceMinutes    AS graceMinutes,
+            LateEnabled     AS lateEnabled
+        FROM Departments
+        ORDER BY DeptID ASC
+    </select>
+
+    <!-- 新增部门 -->
+    <insert id="insertDepartment"
+            parameterType="cn.yonyong.pojo.Department"
+            useGeneratedKeys="true"
+            keyProperty="departmentID">
+        INSERT INTO Departments (
+            DeptName,
+            SupportChannels,
+            LateStartTime,
+            GraceMinutes,
+            LateEnabled
+        )
+        VALUES (
+            #{departmentName},
+            #{supportChannels},
+            #{lateStartTime},
+            #{graceMinutes},
+            #{lateEnabled}
+        )
+    </insert>
+
+    <!-- 查重：同名部门是否已存在（新增用） -->
+    <select id="countByDeptName" resultType="int">
+        SELECT COUNT(1)
+        FROM Departments
+        WHERE DeptName = #{departmentName}
+    </select>
+
+    <!-- 查重：同名但排除当前ID（更新用） -->
+    <select id="countByDeptNameExcludeId" resultType="int">
+        <![CDATA[
+            SELECT COUNT(1)
+            FROM Departments
+            WHERE DeptName = #{departmentName}
+              AND DeptID <> #{departmentID}
+        ]]>
+    </select>
+
+    <!-- 删除部门 -->
+    <delete id="deleteDepartmentById">
+        DELETE FROM Departments
+        WHERE DeptID = #{departmentID}
+    </delete>
+
+    <!-- 更新部门 -->
+    <update id="updateDepartment" parameterType="cn.yonyong.pojo.Department">
+        UPDATE Departments
+        SET
+            DeptName = #{departmentName},
+            SupportChannels = #{supportChannels},
+            LateStartTime = #{lateStartTime},
+            GraceMinutes = #{graceMinutes},
+            LateEnabled = #{lateEnabled}
+        WHERE DeptID = #{departmentID}
+    </update>
+
+</mapper>

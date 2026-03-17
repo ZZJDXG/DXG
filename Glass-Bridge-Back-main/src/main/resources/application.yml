@@ -1,0 +1,30 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  datasource:
+    druid:
+      url: ${SPRING_DATASOURCE_DRUID_URL:jdbc:mysql://localhost:3306/oa?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true&useAffectedRows=true}
+      username: ${SPRING_DATASOURCE_DRUID_USERNAME:root}
+      password: ${SPRING_DATASOURCE_DRUID_PASSWORD:20040329hjsfw}
+      initial-size: 1
+      min-idle: 1
+      max-active: 20
+      test-on-borrow: true
+      driver-class-name: com.mysql.cj.jdbc.Driver
+  redis:
+    host: ${SPRING_REDIS_HOST:localhost}
+    port: ${SPRING_REDIS_PORT:6379}
+  jackson:
+    date-format: yyyy-MM-dd
+    time-zone: Asia/Shanghai
+  thymeleaf:
+    cache: false
+    mode: LEGACYHTML5
+    encoding: UTF-8
+    servlet:
+      content-type: text/html
+
+mybatis:
+  type-aliases-package: cn.yonyong.pojo
+  mapper-locations: classpath:mapper/*.xml

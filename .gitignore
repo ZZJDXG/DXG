@@ -1,0 +1,6 @@
+Glass-Bridge-Back-main/target/
+Glass-Bridge-Front-main/node_modules/
+Glass-Bridge-Front-main/dist/
+.vscode/
+__pycache__/
+*.log

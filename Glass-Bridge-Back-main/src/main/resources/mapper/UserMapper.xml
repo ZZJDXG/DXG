@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.yonyong.dao.UserDao">
+
+  <!-- ================= 登录 ================= -->
+  <select id="queryUser" resultType="cn.yonyong.pojo.User">
+    SELECT
+      StaffID           AS staffID,
+      StaffName         AS staffName,
+      StaffGender       AS staffGender,
+      StaffBirthday     AS staffBirthday,
+      StaffIDCard       AS staffIDCard,
+      StaffDept         AS staffDept,
+      StaffTel          AS tel,
+      StaffPwd          AS password,
+      StaffPosition     AS staffPosition,
+      AttendanceStatus  AS attendanceStatus,
+      DATE(HireDate)    AS hireDate
+    FROM user
+    WHERE StaffTel = #{user.tel}
+      AND StaffPwd = #{user.password}
+  </select>
+
+  <!-- ================= 注册校验：按手机号查用户 ================= -->
+  <select id="registerQueryUser" resultType="cn.yonyong.pojo.User">
+    SELECT
+      StaffID           AS staffID,
+      StaffName         AS staffName,
+      StaffGender       AS staffGender,
+      StaffBirthday     AS staffBirthday,
+      StaffIDCard       AS staffIDCard,
+      StaffDept         AS staffDept,
+      StaffTel          AS tel,
+      StaffPwd          AS password,
+      StaffPosition     AS staffPosition,
+      AttendanceStatus  AS attendanceStatus,
+      DATE(HireDate)    AS hireDate
+    FROM user
+    WHERE StaffTel = #{value}
+  </select>
+
+  <!-- 注册：你现在只插手机号+密码，其他字段走后续“完善资料”或后台录入 -->
+  <insert id="registerUser" parameterType="cn.yonyong.pojo.User">
+    INSERT INTO user (StaffTel, StaffPwd)
+    VALUES (#{tel}, #{password})
+  </insert>
+
+  <!-- 查当前密码（数据库里是 SHA256） -->
+  <select id="queryPasswordByTel" resultType="String">
+    SELECT StaffPwd
+    FROM user
+    WHERE StaffTel = #{tel}
+  </select>
+
+  <!-- ================= 重置密码用：查用户（含身份证） ================= -->
+  <select id="queryUserByTel" resultType="cn.yonyong.pojo.User">
+    SELECT
+      StaffID           AS staffID,
+      StaffName         AS staffName,
+      StaffGender       AS staffGender,
+      StaffBirthday     AS staffBirthday,
+      StaffIDCard       AS staffIDCard,
+      StaffDept         AS staffDept,
+      StaffTel          AS tel,
+      StaffPwd          AS password,
+      StaffPosition     AS staffPosition,
+      AttendanceStatus  AS attendanceStatus,
+      DATE(HireDate)    AS hireDate
+    FROM user
+    WHERE StaffTel = #{tel}
+  </select>
+
+  <select id="queryIdCardByTel" resultType="java.lang.String">
+    SELECT StaffIDCard
+    FROM user
+    WHERE StaffTel = #{tel}
+  </select>
+
+  <update id="updatePasswordByTel">
+    UPDATE user
+    SET StaffPwd = #{password}
+    WHERE StaffTel = #{tel}
+  </update>
+
+</mapper>
