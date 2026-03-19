@@ -6,6 +6,34 @@ import { changePassword as changePasswordApi,
           login as loginApi
  } from '../api/login'
 import { getMenu as getMenuApi } from '../api/department'
+
+const USER_INFO_KEY = 'userInfo'
+
+const getDefaultUserInfo = () => ({
+  staffID: '',
+  staffName: '',
+  password: '',
+  staffDept: '',
+  staffPosition: '',
+  tel: '',
+  supportChannels: ''
+})
+
+const loadUserInfo = () => {
+  try {
+    const raw = localStorage.getItem(USER_INFO_KEY)
+    if (!raw) return getDefaultUserInfo()
+    const parsed = JSON.parse(raw)
+    return { ...getDefaultUserInfo(), ...parsed }
+  } catch (e) {
+    return getDefaultUserInfo()
+  }
+}
+
+const persistUserInfo = (data) => {
+  localStorage.setItem(USER_INFO_KEY, JSON.stringify(data))
+}
+
 // 黄一1️⃣，每条注释看一下
 export const useUserStore = defineStore('user', () => {
   // 用户信息
@@ -15,15 +43,7 @@ export const useUserStore = defineStore('user', () => {
   name: 用户名称
   ...
   */
-  const userInfo = ref({
-    staffID: '',
-    staffName: '',
-    password: '',
-    staffDept: '',
-    staffPosition: '',
-    tel: '12345678900',
-    supportChannels: '',
-  })
+  const userInfo = ref(loadUserInfo())
 
   // 设置用户信息
   /*
@@ -32,6 +52,7 @@ export const useUserStore = defineStore('user', () => {
    */
   const setUserInfo = (info) => {
     userInfo.value = { ...userInfo.value, ...info }
+    persistUserInfo(userInfo.value)
   }
 
   // 获取用户部门
@@ -53,7 +74,7 @@ export const useUserStore = defineStore('user', () => {
     getMenuApi(parsedDeptID).then(res => {
       console.log('getUserSupportChannels res:', res)
       if (res.data.code === 200) {
-        userInfo.value.supportChannels = res.data.data;
+        setUserInfo({ supportChannels: res.data.data || '' })
         ElMessage.success('获取用户支持通道成功')
       } else {
         ElMessage.error(res.data.message || '获取用户支持通道失败')
@@ -116,14 +137,9 @@ export const useUserStore = defineStore('user', () => {
 
   // 清空用户信息
   const clearUserInfo = () => {
-    userInfo.value = {
-      id: '',
-      name: '',
-      department: 'admin',
-      role: '',
-      avatar: ''
-    }
+    userInfo.value = getDefaultUserInfo()
     localStorage.removeItem('token')
+    localStorage.removeItem(USER_INFO_KEY)
   }
 
   return {

@@ -453,7 +453,7 @@ const handleChangePassword = async () => {
 
 const handleLogout = () => {
   // 何杰鸣 退出登录 需要清空所有用户信息
-  useUserStore.clearUserInfo();
+  userStore.clearUserInfo();
   console.log('退出登录')
   ElMessage.success('已退出登录');
   router.push('/login')
