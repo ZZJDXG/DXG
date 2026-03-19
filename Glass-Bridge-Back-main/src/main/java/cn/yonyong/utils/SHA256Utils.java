@@ -4,6 +4,9 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+/**
+ * @author gugu
+ */
 public class SHA256Utils {
 
   public static String sha256(String input) {

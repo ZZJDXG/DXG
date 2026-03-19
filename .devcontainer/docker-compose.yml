@@ -13,7 +13,7 @@ services:
     image: mysql:8.0
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: 20040329hjsfw
+      MYSQL_ROOT_PASSWORD: hejieming
       MYSQL_DATABASE: oa
     volumes:
       - mysql-data:/var/lib/mysql

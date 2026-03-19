@@ -4,9 +4,9 @@ server:
 spring:
   datasource:
     druid:
-      url: ${SPRING_DATASOURCE_DRUID_URL:jdbc:mysql://localhost:3306/oa?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true&useAffectedRows=true}
+      url: ${SPRING_DATASOURCE_DRUID_URL:jdbc:mysql://localhost:3306/oa?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true}
       username: ${SPRING_DATASOURCE_DRUID_USERNAME:root}
-      password: ${SPRING_DATASOURCE_DRUID_PASSWORD:20040329hjsfw}
+      password: ${SPRING_DATASOURCE_DRUID_PASSWORD:hejieming}
       initial-size: 1
       min-idle: 1
       max-active: 20
@@ -18,17 +18,7 @@ spring:
   jackson:
     date-format: yyyy-MM-dd
     time-zone: Asia/Shanghai
-  thymeleaf:
-    cache: false
-    mode: LEGACYHTML5
-    encoding: UTF-8
-    servlet:
-      content-type: text/html
 
 mybatis:
   type-aliases-package: cn.yonyong.pojo
   mapper-locations: classpath:mapper/*.xml
-
-app:
-  cors:
-    allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:*}

@@ -6,10 +6,15 @@
   "shutdownAction": "stopCompose",
   "forwardPorts": [
     5173,
+    5174,
     8080
   ],
   "portsAttributes": {
     "5173": {
+      "label": "Frontend (legacy)",
+      "onAutoForward": "notify"
+    },
+    "5174": {
       "label": "Frontend",
       "onAutoForward": "openBrowser"
     },

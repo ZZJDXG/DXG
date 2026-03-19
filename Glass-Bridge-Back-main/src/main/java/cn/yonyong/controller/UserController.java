@@ -32,7 +32,7 @@ public class UserController {
      * body: { "tel": "...", "password": "..." }
      */
     @PostMapping("/login")
-    public Result login(@RequestBody LoginRequest body) {
+    public Result<?> login(@RequestBody LoginRequest body) {
         if (body.getTel() == null || body.getTel().trim().isEmpty()) {
             return Result.error("手机号不能为空");
         }
@@ -50,7 +50,7 @@ public class UserController {
      * body: { "tel": "..." }
      */
     @PutMapping("/{tel}/password/reset")
-    public Result resetPassword(@PathVariable("tel")String usertel) {
+    public Result<?> resetPassword(@PathVariable("tel")String usertel) {
         if (usertel == null || usertel.trim().isEmpty()) {
             return Result.error("手机号不能为空");
         }
@@ -64,7 +64,7 @@ public class UserController {
      * body: {"oldPassword": "...", "newPassword": "..." }
      */
     @PutMapping("/{tel}/password")
-    public Result changePassword(@PathVariable("tel") String usertel,@RequestBody ChangePasswordRequest body) {
+    public Result<?> changePassword(@PathVariable("tel") String usertel,@RequestBody ChangePasswordRequest body) {
         if(usertel == null || usertel.trim().isEmpty()) {
             return Result.error("手机号不能为空");
         }

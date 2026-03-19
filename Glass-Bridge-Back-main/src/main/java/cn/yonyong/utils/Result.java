@@ -38,6 +38,9 @@ public class Result<T> implements Serializable {
     public static <T> Result<T> success(String message) {
         return new Result<>(200, null, message);
     }
+    public static <T> Result<T> success(T data, String message) {
+        return new Result<>(200, data, message);
+    }
 
     // 失败的静态方法
     public static <T> Result<T> error(String message) {
