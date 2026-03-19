@@ -28,7 +28,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         if (supportChannels == null) {
             return Result.error("该部门不存在");
         }
-        return new Result<>(0, "查询成功", supportChannels);
+        return new Result<>(200, "查询成功", supportChannels);
     }
 
     @Override
