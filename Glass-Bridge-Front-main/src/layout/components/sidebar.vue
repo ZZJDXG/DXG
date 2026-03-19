@@ -20,34 +20,17 @@
         <span>首页</span>
       </div>
 
-      <div v-if="isMenuVisible('2-1') || isMenuVisible('2-2') || isMenuVisible('2-3') || isMenuVisible('2-4') || isMenuVisible('2-5') || isMenuVisible('2-6')" class="menu-group">
-        <div class="menu-item" @click="isPersonalExpanded = !isPersonalExpanded">
-          <div class="flex-row">
-            <svg class="icon" viewBox="0 -1 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
-              <circle cx="12" cy="7" r="4"/>
-            </svg>
-            <span>个人中心</span>
-          </div>
-          <div class="close-btn" :class="{ 'is-collapsed': !isPersonalExpanded }"></div>
-        </div>
-
-        <div class="submenu-wrapper" :class="{ 'is-open': isPersonalExpanded }">
-          <div class="submenu-content">
-            <div class="submenu">
-              <div v-if="isMenuVisible('2-1')" class="submenu-item" :class="{ active: isActive('2-1') }" @click.stop="handleMenuClick('2-1')">审批中心</div>
-              <div v-if="isMenuVisible('2-2')" class="submenu-item" :class="{ active: isActive('2-2') }" @click.stop="handleMenuClick('2-2')">报销申请</div>
-              <div v-if="isMenuVisible('2-1')" class="submenu-item" :class="{ active: isActive('2-1') }" @click.stop="handleMenuClick('2-3')">工资条</div>
-              <div v-if="isMenuVisible('2-2')" class="submenu-item" :class="{ active: isActive('2-2') }" @click.stop="handleMenuClick('2-2')">我的排班</div>
-              <div v-if="isMenuVisible('2-1')" class="submenu-item" :class="{ active: isActive('2-1') }" @click.stop="handleMenuClick('2-1')">我的积分</div>
-              <div v-if="isMenuVisible('2-2')" class="submenu-item" :class="{ active: isActive('2-2') }" @click.stop="handleMenuClick('2-2')">积分抽奖</div>
-            </div>
-          </div>
-        </div>
+      <!--
+      <div class="menu-item" :class="{ active: isActive('P') }" @click="handleMenuClick('P')">
+        <svg class="icon" viewBox="0 -1 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        <span>个人中心</span>
       </div>
+      -->
 
-      <!-- 组织管理 -->
-      <div v-if="isMenuVisible('4-1') || isMenuVisible('4-2')" class="menu-group">
+      <div v-if="isMenuVisible('O-1') || isMenuVisible('O-2')" class="menu-group">
         <div class="menu-item" @click="isOrganizationExpanded = !isOrganizationExpanded">
           <div class="flex-row">
             <svg class="icon" viewBox="0 -1 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -65,15 +48,38 @@
         <div class="submenu-wrapper" :class="{ 'is-open': isOrganizationExpanded }">
           <div class="submenu-content">
             <div class="submenu">
-              <div v-if="isMenuVisible('4-1')" class="submenu-item" :class="{ active: isActive('4-1') }" @click.stop="handleMenuClick('4-1')">部门信息维护</div>
-              <div v-if="isMenuVisible('4-2')" class="submenu-item" :class="{ active: isActive('4-2') }" @click.stop="handleMenuClick('4-2')">职级信息维护</div>
+              <div v-if="isMenuVisible('O-1')" class="submenu-item" :class="{ active: isActive('O-1') }" @click.stop="handleMenuClick('O-1')">部门信息维护</div>
+              <div v-if="isMenuVisible('O-2')" class="submenu-item" :class="{ active: isActive('O-2') }" @click.stop="handleMenuClick('O-2')">职级信息维护</div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- 组织管理 -->
-      <div v-if="isMenuVisible('4-1') || isMenuVisible('4-2')" class="menu-group">
+      <div v-if="isMenuVisible('H-1') || isMenuVisible('H-2')" class="menu-group">
+        <div class="menu-item" @click="isHRExpanded = !isHRExpanded">
+          <div class="flex-row">
+            <svg class="icon" viewBox="0 -1 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            <span>人事管理</span>
+          </div>
+          <div class="close-btn" :class="{ 'is-collapsed': !isHRExpanded }"></div>
+        </div>
+
+        <div class="submenu-wrapper" :class="{ 'is-open': isHRExpanded }">
+          <div class="submenu-content">
+            <div class="submenu">
+              <div v-if="isMenuVisible('H-1')" class="submenu-item" :class="{ active: isActive('H-1') }" @click.stop="handleMenuClick('H-1')">员工信息维护</div>
+              <div v-if="isMenuVisible('H-2')" class="submenu-item" :class="{ active: isActive('H-2') }" @click.stop="handleMenuClick('H-2')">绩效管理</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div v-if="isMenuVisible('A-1') || isMenuVisible('A-2')" class="menu-group">
         <div class="menu-item" @click="isAttendanceExpanded = !isAttendanceExpanded">
           <div class="flex-row">
             <svg class="icon" viewBox="0 -1 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -91,39 +97,16 @@
         <div class="submenu-wrapper" :class="{ 'is-open': isAttendanceExpanded }">
           <div class="submenu-content">
             <div class="submenu">
-              <div v-if="isMenuVisible('4-1')" class="submenu-item" :class="{ active: isActive('4-1') }" @click.stop="handleMenuClick('4-1')">部门信息维护</div>
-              <div v-if="isMenuVisible('4-2')" class="submenu-item" :class="{ active: isActive('4-2') }" @click.stop="handleMenuClick('4-2')">职级信息维护</div>
+              <div v-if="isMenuVisible('A-1')" class="submenu-item" :class="{ active: isActive('A-1') }" @click.stop="handleMenuClick('A-1')">排班</div>
+              <div v-if="isMenuVisible('A-2')" class="submenu-item" :class="{ active: isActive('A-2') }" @click.stop="handleMenuClick('A-2')">考勤明细</div>
             </div>
           </div>
         </div>
       </div>
 
-      <div v-if="isMenuVisible('5-1') || isMenuVisible('5-2')" class="menu-group">
-        <div class="menu-item" @click="isHRExpanded = !isHRExpanded">
-          <div class="flex-row">
-            <svg class="icon" viewBox="0 -1 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-              <circle cx="9" cy="7" r="4"></circle>
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-            </svg>
-            <span>人事管理</span>
-          </div>
-          <div class="close-btn" :class="{ 'is-collapsed': !isHRExpanded }"></div>
-        </div>
-
-        <div class="submenu-wrapper" :class="{ 'is-open': isHRExpanded }">
-          <div class="submenu-content">
-            <div class="submenu">
-              <div v-if="isMenuVisible('5-1')" class="submenu-item" :class="{ active: isActive('5-1') }" @click.stop="handleMenuClick('5-1')">员工信息维护</div>
-              <div v-if="isMenuVisible('5-2')" class="submenu-item" :class="{ active: isActive('5-2') }" @click.stop="handleMenuClick('5-2')">绩效管理</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div v-if="isMenuVisible('5-1') || isMenuVisible('5-2')" class="menu-group">
-        <div class="menu-item" @click="isHRExpanded = !isHRExpanded">
+      <!--
+      <div v-if="isMenuVisible('S-1') || isMenuVisible('S-2') || isMenuVisible('S-3')" class="menu-group">
+        <div class="menu-item" @click="isScoreExpanded = !isScoreExpanded">
           <div class="flex-row">
             <svg class="icon" viewBox="0 -1 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M10 16V9.5a1 1 0 0 1 5 0"/>
@@ -132,18 +115,20 @@
             </svg>
             <span>积分管理</span>
           </div>
-          <div class="close-btn" :class="{ 'is-collapsed': !isHRExpanded }"></div>
+          <div class="close-btn" :class="{ 'is-collapsed': !isScoreExpanded }"></div>
         </div>
 
-        <div class="submenu-wrapper" :class="{ 'is-open': isHRExpanded }">
+        <div class="submenu-wrapper" :class="{ 'is-open': isScoreExpanded }">
           <div class="submenu-content">
             <div class="submenu">
-              <div v-if="isMenuVisible('5-1')" class="submenu-item" :class="{ active: isActive('5-1') }" @click.stop="handleMenuClick('5-1')">员工信息维护</div>
-              <div v-if="isMenuVisible('5-2')" class="submenu-item" :class="{ active: isActive('5-2') }" @click.stop="handleMenuClick('5-2')">绩效管理</div>
+              <div v-if="isMenuVisible('S-1')" class="submenu-item" :class="{ active: isActive('S-1') }" @click.stop="handleMenuClick('S-1')">员工积分明细</div>
+              <div v-if="isMenuVisible('S-2')" class="submenu-item" :class="{ active: isActive('S-2') }" @click.stop="handleMenuClick('S-2')">奖品库存维护</div>
+              <div v-if="isMenuVisible('S-3')" class="submenu-item" :class="{ active: isActive('S-3') }" @click.stop="handleMenuClick('S-3')">奖品兑换核销</div>
             </div>
           </div>
         </div>
       </div>
+      -->
 
       <!-- 系统设置 
       <div class="menu-item" :class="{ active: isActive('10') }" @click="handleMenuClick('10')">
@@ -161,11 +146,11 @@
           <div class="more-options">···</div>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item command="profile">
-                <el-icon><User /></el-icon> 个人中心
-              </el-dropdown-item>
               <el-dropdown-item command="changePassword">
-                <el-icon><Setting /></el-icon> 更改密码
+                更改密码
+              </el-dropdown-item>
+              <el-dropdown-item command="logout">
+                退出登录
               </el-dropdown-item>
             </el-dropdown-menu>
           </template>
@@ -180,10 +165,6 @@
           <p class="user-position">{{ userdept }}{{ userpos }}</p>
         </div>
       </div>
-
-      <button class="logout-btn" @click="handleLogout">
-        退出
-      </button>
     </div>
 
     <!-- 更改密码对话框 -->
@@ -251,33 +232,31 @@ import { useRouter, useRoute } from 'vue-router';
 import { useUserStore } from '../../stores/userStore';
 import { ElMessage } from 'element-plus';
 import { User, Setting, SwitchButton } from '@element-plus/icons-vue';
+
 const router = useRouter();
 const route = useRoute();
 
 // 菜单权限列表（顺序需与二进制位一一对应）
 const menuPermissions = [
-  '2-1', '2-2', '2-3', '2-4', '2-5', '2-6',
-  '3-1', '3-2',
-  '4-1', '4-2',
-  '5-1', '5-2', '5-3', '5-4',
-  '6-1', '6-2', '6-3', '6-4',
-  '7-1',
-  '8-1', '8-2',
-  '9-1', '9-2'
+  'O-1', 'O-2',
+  'H-1', 'H-2', 'H-3', 'H-4',
+  'A-1', 'A-2', 'A-3', 'A-4',
+  'S-1', 'S-2', 'S-3'
 ];
 
 // 何杰鸣 获取用户信息
 const userStore = useUserStore();
-const username = computed(() => userStore.userInfo?.staffName || '用户');
-const userdept = computed(() => userStore.userInfo.staffDept || '');
-const userpos = computed(() => userStore.userInfo?.staffPosition || '员工');
+
+const username = computed(() => userStore.userInfo?.username || '用户');
+const userdept = computed(() => userStore.userInfo.userdept || '');
+const userpos = computed(() => userStore.userInfo?.userpos || '员工');
 
 // 何杰鸣 后续通过userdept查数据库获取supportChannel
-const supportChannel = computed(() => userStore.userInfo?.supportChannels || '');
-console.log('supportChannel:', supportChannel)
+const supportChannel = '1111111111111';
+
 // 根据supportChannel二进制字符串获取可访问菜单
 const getAccessibleMenus = () => {
-  const bits = supportChannel.value || '';
+  const bits = supportChannel || '';
   const result = [];
   for (let i = 0; i < bits.length && i < menuPermissions.length; i++) {
     if (bits[i] === '1') result.push(menuPermissions[i]);
@@ -292,31 +271,24 @@ const isMenuVisible = (menuIndex) => {
 
 // 定义菜单路由映射
 const menuRoutes = {
-  '1': '/index',
-  '2-1': '/personal/approval',
-  '2-2': '/personal/reimbursement',
-  '2-3': '/personal/payroll',
-  '2-4': '/personal/schedule',
-  '2-5': '/personal/mypoints',
-  '2-6': '/personal/myraffle',
-  '3-1': '/finance/approval',
-  '3-2': '/finance/salary',
-  '4-1': '/organization/department',
-  '4-2': '/organization/staffPosition',
-  '5-1': '/hr/employeesInfo',
-  '5-2': '/hr/E-contracts',
-  '5-3': '/hr/performance',
-  '5-4': '/hr/scheduling',
-  '6-1': '/attendance/settings',
-  '6-2': '/attendance/scheduling',
-  '6-3': '/attendance/records',
-  '6-4': '/attendance/reports',
-  '7-1': '/warehouse/assets',
-  '8-1': '/vehicle/info',
-  '8-2': '/vehicle/schedule',
-  '9-1': '/dormitory/info',
-  '9-2': '/dormitory/allocation',
-  '10': '/settings'
+  '1': '/',
+  'P': '/profile',
+  'O-1': '/organization/department',
+  'O-2': '/organization/staffPosition',
+  'H-1': '/hr/employeesInfo',
+  'H-2': '/hr/E-contracts',
+  'H-3': '/hr/performance',
+  'H-4': '/hr/scheduling',
+  'A-1': '/attendance/settings',
+  'A-2': '/attendance/scheduling',
+  'A-3': '/attendance/records',
+  'A-4': '/attendance/reports',
+  'W-1': '/warehouse/assets',
+  'V-1': '/vehicle/info',
+  'V-2': '/vehicle/schedule',
+  'D-1': '/dormitory/info',
+  'D-2': '/dormitory/allocation',
+  'S-1': '/scores/'
 };
 
 // 计算当前激活的菜单项
@@ -332,37 +304,30 @@ const activeIndex = computed(() => {
   return '1';
 });
 
-// 检查当前路由是否在个人中心子菜单中
-const isInPersonalMenu = computed(() => {
-  return ['2-1', '2-2', '2-3', '2-4', '2-5', '2-6'].includes(activeIndex.value);
-});
-
-// 检查当前路由是否在组织管理子菜单中
 const isInOrganizationMenu = computed(() => {
-  return activeIndex.value === '4-1' || activeIndex.value === '4-2';
+  return activeIndex.value === 'O-1' || activeIndex.value === 'O-2';
 });
 
-// 检查当前路由是否在组织管理子菜单中
 const isInHRMenu = computed(() => {
-  return activeIndex.value === '5-1' || activeIndex.value === '5-2';
+  return activeIndex.value === 'H-1' || activeIndex.value === 'H-2';
 });
 
-// 检查当前路由是否在组织管理子菜单中
 const isInAttendanceMenu = computed(() => {
-  return activeIndex.value === '6-1' || activeIndex.value === '6-2';
+  return activeIndex.value === 'A-1' || activeIndex.value === 'A-2';
 });
 
-// 为每个菜单组使用独立的展开状态
-const isPersonalExpanded = ref(isInPersonalMenu.value);
+const isInScoreMenu = computed(() => {
+  return activeIndex.value === 'S-1' || activeIndex.value === 'S-2' || activeIndex.value === 'S-3';
+});
+
+// 为每个菜单组使用独立的展开状态]
 const isOrganizationExpanded = ref(isInOrganizationMenu.value);
 const isHRExpanded = ref(isInHRMenu.value);
 const isAttendanceExpanded = ref(isInAttendanceMenu.value);
+const isScoreExpanded = ref(isInScoreMenu.value);
 
 // 监听路由变化，自动展开/收起对应的子菜单
 watch(() => route.path, () => {
-  if (isInPersonalMenu.value) {
-    isPersonalExpanded.value = true;
-  }
   if (isInOrganizationMenu.value) {
     isOrganizationExpanded.value = true;
   }
@@ -371,6 +336,9 @@ watch(() => route.path, () => {
   }
   if (isInAttendanceMenu.value) {
     isAttendanceExpanded.value = true;
+  }
+  if (isInScoreMenu.value) {
+    isScoreExpanded.value = true;
   }
 });
 
@@ -397,12 +365,13 @@ const passwordForm = ref({
 
 const handleUserCommand = (command) => {
   switch (command) {
-    case 'profile':
-      router.push('/profile');
-      break;
     case 'changePassword':
       dialogVisible.value = true;
       break;
+    case 'logout':
+      // 何杰鸣 退出登录 需要清空所有用户信息
+      console.log('退出登录')
+      router.push('/login')
   }
 };
 
@@ -432,12 +401,16 @@ const handleChangePassword = async () => {
     ElMessage.error('新密码不能与旧密码相同');
     return;
   }
-  console.log('tel:', userStore.userInfo.tel)
+  
   // 何杰鸣 更改密码 后端接口
-  userStore.changePassword(userStore.userInfo.tel, {
-    oldPassword: passwordForm.value.oldPassword,
-    newPassword: passwordForm.value.newPassword
-  });
+  try {
+    // TODO: 调用后端接口
+    // await changePasswordAPI({
+    //   oldPassword: passwordForm.value.oldPassword,
+    //   newPassword: passwordForm.value.newPassword
+    // });
+    
+    ElMessage.success('密码修改成功，请重新登录');
     dialogVisible.value = false;
     // 清空表单
     passwordForm.value = {
@@ -449,15 +422,11 @@ const handleChangePassword = async () => {
     setTimeout(() => {
       router.push('/login');
     }, 1000);
+  } catch (error) {
+    ElMessage.error(error.message || '密码修改失败');
+  }
 };
 
-const handleLogout = () => {
-  // 何杰鸣 退出登录 需要清空所有用户信息
-  userStore.clearUserInfo();
-  console.log('退出登录')
-  ElMessage.success('已退出登录');
-  router.push('/login')
-}
 </script>
 
 <style scoped>
@@ -474,7 +443,7 @@ const handleLogout = () => {
   color: #333;
 }
 
-.logo-section { display: flex;  gap: 15px;  margin-bottom: 10%;  margin-left: 13.8%; flex-shrink: 0; margin-top: -4.5%;}
+.logo-section { display: flex;  gap: 15px;  margin-bottom: 10%;  margin-left: 13.6%; flex-shrink: 0; margin-top: -4.5%;}
 .logo { display: flex; align-items: center; gap: 10px; cursor: pointer; transition: opacity 0.3s; }
 .logo:hover { opacity: 0.9; }
 .logo-img { height: 38px; width: 38px; border-radius: 6px; }
@@ -594,7 +563,7 @@ const handleLogout = () => {
 
 /* 树状连接线 (保持之前的逻辑) */
 .submenu {
-  margin-left: 36px;
+  margin-left: 25px;
   position: relative;
   padding-top: 0px;
   padding-bottom: 3px;
@@ -648,7 +617,6 @@ const handleLogout = () => {
 
 /* 底部样式保持不变... */
 .footer-card {
-  padding: 18px 10px;
   background: #f8f7f5; /* 参考图中的浅米灰底色 */
   border-radius: 24px;
   display: flex;
@@ -665,7 +633,8 @@ const handleLogout = () => {
   flex-direction: column;
   align-items: center;
   position: relative;
-  margin-bottom: 24px;
+  margin-bottom: -15px;
+  margin-top: 25px;
 }
 
 /* 三个点：绝对定位到右上角 */
@@ -703,8 +672,8 @@ const handleLogout = () => {
   font-size: 18px;
   font-weight: 600;
   color: #1a1a1a;
-  margin-top: -5px;
-  margin-bottom: 4px;
+  margin-top: 3px;
+  margin-bottom: 10px;
   letter-spacing: -0.5px;
 
 }
@@ -712,30 +681,5 @@ const handleLogout = () => {
   font-size: 13.5px;
   color: #8c8c8c;
   margin: 0;
-}
-
-/* 退出登录：简约且带阴影 */
-.logout-btn {
-  width: 85%;
-  height: 40px;
-  padding: 10px 0;
-  border: none;
-  background: #FEFEFE;
-  color: #666;
-  font-size: 13px;
-  font-weight: 400;
-  border-radius: 12px;
-  cursor: pointer;
-  margin-bottom: -30px;
-  margin-top: -3px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  transition: all 0.2s ease;
-}
-
-.logout-btn:hover {
-  background: #fff;
-  color: #ff4d4f;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-  transform: translateY(-1px);
 }
 </style>

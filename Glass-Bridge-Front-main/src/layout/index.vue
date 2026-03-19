@@ -6,6 +6,7 @@
       <Sidebar 
         v-if="!isMobile"
         class="app-sidebar"
+        :class="{ 'hide-border': isHomePage() }"
       />
 
       <!-- Main Content -->
@@ -17,6 +18,7 @@
           <router-view :is-mobile="isMobile" />
         </div>
         <Footer 
+          v-if="isMobile || !isHomePage()"
           class="app-footer" 
         />
       </div>
@@ -26,12 +28,17 @@
 
 <script setup>
 import { inject } from 'vue'
+import { useRoute } from 'vue-router'
 import Sidebar from './components/sidebar.vue'
 import Footer from './components/footer.vue'
 import Header from './components/header.vue'
 
 // 从 App.vue 注入移动端状态
 const isMobile = inject('isMobile')
+const route = useRoute()
+
+// 判断是否为首页
+const isHomePage = () => route.path === '/'
 </script>
 
 <style>
@@ -70,6 +77,10 @@ html, body, #app {
   background: #F8F8F8;
   border-right: 1px solid #e9ecef;
   transition: transform 0.3s ease;
+}
+
+.app-sidebar.hide-border {
+  border-right: none;
 }
 
 /* 内容区 */

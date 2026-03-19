@@ -5,11 +5,11 @@ const routes = [
   { path: '/', redirect: '/login' },
   { path: '/login', component: Login },
   {
-    path: '/index',
+    path: '/',
     component: () => import('../layout/index.vue'),
-    redirect: '/index/dashboard',
+    redirect: '/',
     children: [
-      { path: 'dashboard', component: () => import('../views/dashboard/index.vue') },
+      { path: '/', component: () => import('../views/dashboard/index.vue') },
       { path: '/organization/department', component: () => import('../views/organization/department.vue')},
       {
         path: '/organization/staffPosition',
@@ -38,7 +38,17 @@ const routes = [
       { path: '/mobile/signin', component: () => import('../views/mobile/signin.vue') },
       { path: '/mobile/functions', component: () => import('../views/mobile/functions.vue') },
       { path: '/mobile/notifications', component: () => import('../views/mobile/notifications.vue') },
+      { 
+        path: '/mobile/addressList',
+        component: () => import('../views/mobile/addressList.vue') 
+      },
+      {
+        path: '/mobile/employee/:id',
+        component: () => import('../views/mobile/employeeDetail.vue')
+      },
       { path: '/scores/myscore', component: () => import('../views/scores/myscore.vue') },
+      { path: '/scores/lottery', component: () => import('../views/scores/lottery.vue') },
+      { path: '/salaries/mysalary', component: () => import('../views/salaries/mysalary.vue') },
     ]
   }
 ]

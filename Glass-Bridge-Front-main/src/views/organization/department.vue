@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed, reactive } from 'vue'
+import { ref, onMounted, onBeforeUnmount, computed, reactive, nextTick } from 'vue'
 import { useDepartmentStore } from '../../stores'
 import { 
   Plus, 
@@ -52,6 +52,7 @@ const loading = computed(() => departmentStore.loading)
 const addLevel1DialogVisible = ref(false)
 const addLevel2DialogVisible = ref(false)
 const editDialogVisible = ref(false)
+const attendanceLocationDialogVisible = ref(false)
 
 // 当前编辑的部门
 const currentDepartment = reactive({
@@ -64,7 +65,9 @@ const currentDepartment = reactive({
   AttendanceRule1Start: '',
   AttendanceRule1End: '',
   AttendanceRule2Start: '',
-  AttendanceRule2End: ''
+  AttendanceRule2End: '',
+  ForceEndTime: '',
+  attendanceLocation: [] // 新增：考勤定位坐标数组
 })
 
 // 分页相关变量
@@ -73,6 +76,81 @@ const pagination = ref({
   pageSize: 10,
   total: 0
 })
+
+// 地图相关变量
+const attendanceMap = ref(null)
+const attendanceMarkers = ref([])
+const attendancePolygon = ref(null)
+
+const normalizeMapPosition = (point) => {
+  if (!point) return null
+  if (Array.isArray(point)) return point
+  if (typeof point.lng === 'number' && typeof point.lat === 'number') {
+    return [point.lng, point.lat]
+  }
+  return null
+}
+
+const clearAttendanceOverlays = () => {
+  attendanceMarkers.value.forEach(marker => marker.setMap(null))
+  attendanceMarkers.value = []
+
+  if (attendancePolygon.value) {
+    attendancePolygon.value.setMap(null)
+    attendancePolygon.value = null
+  }
+}
+
+const destroyAttendanceMap = () => {
+  clearAttendanceOverlays()
+
+  if (attendanceMap.value) {
+    attendanceMap.value.off('click')
+    attendanceMap.value.destroy()
+    attendanceMap.value = null
+  }
+}
+
+const updateAttendancePolygonFromMarkers = () => {
+  if (attendanceMarkers.value.length === 4) {
+    drawPolygon(attendanceMarkers.value.map(marker => marker.getPosition()))
+  } else if (attendancePolygon.value) {
+    attendancePolygon.value.setMap(null)
+    attendancePolygon.value = null
+  }
+}
+
+const bindMarkerDragEvents = (marker) => {
+  marker.on('dragging', updateAttendancePolygonFromMarkers)
+  marker.on('dragend', () => {
+    updateAttendancePolygonFromMarkers()
+    attendanceMap.value?.setFitView([...attendanceMarkers.value, ...(attendancePolygon.value ? [attendancePolygon.value] : [])])
+  })
+}
+
+const renderAttendanceMarkers = (locations) => {
+  const positions = (locations || [])
+    .map(normalizeMapPosition)
+    .filter(Boolean)
+
+  positions.forEach(position => {
+    const marker = new AMap.Marker({
+      position,
+      map: attendanceMap.value,
+      draggable: true,
+      cursor: 'move'
+    })
+    bindMarkerDragEvents(marker)
+    attendanceMarkers.value.push(marker)
+  })
+
+  if (positions.length === 4) {
+    updateAttendancePolygonFromMarkers()
+    attendanceMap.value.setFitView([...attendanceMarkers.value, attendancePolygon.value])
+  } else if (positions.length > 0) {
+    attendanceMap.value.setFitView(attendanceMarkers.value)
+  }
+}
 
 // 过滤后的部门列表（只显示一级部门）
 const filteredDepartments = computed(() => {
@@ -151,7 +229,9 @@ const openAddLevel1Dialog = () => {
     DeptName: '',
     SuperiorDept: -1,
     ShiftType: -1,
+    ForceEndTime: '0000',
     supportChannels: '0'.repeat(menuPermissions.value.length),
+    attendanceLocation: []
   })
   addLevel1DialogVisible.value = true
 }
@@ -163,7 +243,9 @@ const openAddLevel2Dialog = () => {
     DeptName: '',
     SuperiorDept: null,
     ShiftType: -1,
+    ForceEndTime: '0000',
     supportChannels: '0'.repeat(menuPermissions.value.length),
+    attendanceLocation: []
   })
   addLevel2DialogVisible.value = true
 }
@@ -175,8 +257,64 @@ const openEditDialog = (dept) => {
   if (typeof deptCopy.supportChannels !== 'string') {
     deptCopy.supportChannels = '0'.repeat(menuPermissions.value.length)
   }
+  // 确保 attendanceLocation 是数组
+  if (!deptCopy.attendanceLocation) {
+    deptCopy.attendanceLocation = []
+  }
+  if (!deptCopy.ForceEndTime) {
+    deptCopy.ForceEndTime = ''
+  }
   Object.assign(currentDepartment, deptCopy)
   editDialogVisible.value = true
+}
+
+// 打开考勤定位对话框
+const openAttendanceLocationDialog = () => {
+  attendanceLocationDialogVisible.value = true
+  nextTick(() => {
+    destroyAttendanceMap()
+
+    attendanceMap.value = new AMap.Map('attendanceMap', {
+      center: [110.697564, 29.395224],
+      zoom: 15,
+      dragEnable: true,
+      scrollWheel: true,
+      doubleClickZoom: true,
+      jogEnable: true
+    })
+
+    attendanceMap.value.resize()
+
+    if (currentDepartment.attendanceLocation && currentDepartment.attendanceLocation.length > 0) {
+      renderAttendanceMarkers(currentDepartment.attendanceLocation)
+    }
+
+    attendanceMap.value.on('click', (e) => {
+      if (attendanceMarkers.value.length < 4) {
+        const marker = new AMap.Marker({
+          position: [e.lnglat.lng, e.lnglat.lat],
+          map: attendanceMap.value,
+          draggable: true,
+          cursor: 'move'
+        })
+        bindMarkerDragEvents(marker)
+        attendanceMarkers.value.push(marker)
+        if (attendanceMarkers.value.length === 4) {
+          updateAttendancePolygonFromMarkers()
+          attendanceMap.value.setFitView([...attendanceMarkers.value, attendancePolygon.value])
+        }
+      }
+    })
+  })
+}
+
+const closeAttendanceLocationDialog = () => {
+  attendanceLocationDialogVisible.value = false
+  destroyAttendanceMap()
+}
+
+const resetAttendanceLocationDraft = () => {
+  clearAttendanceOverlays()
 }
 
 // 保存部门
@@ -202,7 +340,7 @@ const saveDepartment = () => {
 // 删除部门
 const handleDelete = (dept) => {
   ElMessageBox.confirm(
-    `确定要删除 "${dept.DeptName}" 吗？`,
+    `确定要删除 ${dept.DeptName} 吗？`,
     '删除确认',
     {
       confirmButtonText: '确定',
@@ -249,6 +387,46 @@ const selectAllMenus = () => {
 // 全不选菜单权限
 const clearAllMenus = () => {
   currentDepartment.supportChannels = '0'.repeat(menuPermissions.value.length)
+}
+
+// 绘制多边形
+const drawPolygon = (positions) => {
+  const polygonPath = positions
+    .map(normalizeMapPosition)
+    .filter(Boolean)
+
+  if (attendancePolygon.value) {
+    attendancePolygon.value.setMap(null)
+  }
+
+  attendancePolygon.value = new AMap.Polygon({
+    path: polygonPath,
+    strokeColor: '#FF0000',
+    strokeWeight: 2,
+    fillColor: '#FF0000',
+    fillOpacity: 0.3
+  })
+  attendancePolygon.value.setMap(attendanceMap.value)
+}
+
+// 保存考勤定位
+const saveAttendanceLocation = () => {
+  if (attendanceMarkers.value.length === 4) {
+    const coords = attendanceMarkers.value.map(m => {
+      const pos = m.getPosition()
+      return { lng: pos.lng, lat: pos.lat }
+    })
+    currentDepartment.attendanceLocation = coords
+    closeAttendanceLocationDialog()
+  } else {
+    ElMessage.warning('请先选择四个点')
+  }
+}
+
+// 格式化考勤定位显示
+const formatAttendanceLocation = (locations) => {
+  if (!locations || locations.length === 0) return '未设置'
+  return locations.map(l => `${l.lng.toFixed(4)}, ${l.lat.toFixed(4)}`).join('; ')
 }
 
 // 加载数据
@@ -304,8 +482,9 @@ const formatAttendanceRule = (dept) => {
 
   const rule1 = formatRule(dept.AttendanceRule1Start, dept.AttendanceRule1End)
   const rule2 = formatRule(dept.AttendanceRule2Start, dept.AttendanceRule2End)
+  const forceEnd = dept.ForceEndTime ? `强制下班:${formatTime(dept.ForceEndTime)}` : ''
 
-  const timeText = [rule1, rule2].filter(Boolean).join(' ')
+  const timeText = [rule1, rule2, forceEnd].filter(Boolean).join(' ')
   if (dayText && timeText) return `${dayText}<br/>${timeText}`
   return dayText || timeText || '———'
 }
@@ -321,6 +500,10 @@ const getRowClassName = ({ row, rowIndex }) => {
 
 onMounted(() => {
   loadData()
+})
+
+onBeforeUnmount(() => {
+  destroyAttendanceMap()
 })
 </script>
 
@@ -575,7 +758,28 @@ onMounted(() => {
             </el-form-item>
           </el-col>
         </el-row>
-        
+        <el-row :gutter="20">
+          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+            <el-form-item label="强制下班时间">
+              <el-input
+                v-model="currentDepartment.ForceEndTime"
+                placeholder="如 1800"
+                maxlength="4"
+                @input="(val) => { currentDepartment.ForceEndTime = normalizeTimeInput(val) }"
+              />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+            <el-form-item label="考勤定位">
+              <el-button @click="openAttendanceLocationDialog">维护定位信息</el-button>
+              <div v-if="currentDepartment.attendanceLocation && currentDepartment.attendanceLocation.length > 0" style="margin-top: 10px;">
+                当前定位：{{ formatAttendanceLocation(currentDepartment.attendanceLocation) }}
+              </div>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-row :gutter="20">
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
             <el-form-item label="菜单权限" required>
@@ -729,6 +933,33 @@ onMounted(() => {
             </el-form-item>
           </el-col>
         </el-row>
+
+        <el-row :gutter="20">
+          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+            <el-form-item label="强制下班时间">
+              <el-input
+                v-model="currentDepartment.ForceEndTime"
+                placeholder="如 1800"
+                maxlength="4"
+                @input="(val) => { currentDepartment.ForceEndTime = normalizeTimeInput(val) }"
+              />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row
+          :gutter="20"
+          v-if="currentDepartment.SuperiorDept !== -1 && currentDepartment.SuperiorDept != null"
+        >
+          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+            <el-form-item label="考勤定位">
+              <el-button @click="openAttendanceLocationDialog">维护定位信息</el-button>
+              <div v-if="currentDepartment.attendanceLocation && currentDepartment.attendanceLocation.length > 0" style="margin-top: 10px;">
+                当前定位：{{ formatAttendanceLocation(currentDepartment.attendanceLocation) }}
+              </div>
+            </el-form-item>
+          </el-col>
+        </el-row>
         
         <el-row :gutter="20">
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
@@ -758,6 +989,22 @@ onMounted(() => {
       <template #footer>
         <el-button @click="editDialogVisible = false">取消</el-button>
         <el-button type="primary" @click="saveDepartment">保存</el-button>
+      </template>
+    </el-dialog>
+    
+    <!-- 考勤定位对话框 -->
+    <el-dialog
+      v-model="attendanceLocationDialogVisible"
+      title="维护考勤定位信息"
+      width="800px"
+      destroy-on-close
+    >
+      <div id="attendanceMap" style="height: 400px;"></div>
+      <p style="margin-top: 10px;">请在地图上点击四个点来框选考勤区域。</p>
+      <template #footer>
+        <el-button @click="resetAttendanceLocationDraft">重画</el-button>
+        <el-button @click="closeAttendanceLocationDialog">取消</el-button>
+        <el-button type="primary" @click="saveAttendanceLocation">保存</el-button>
       </template>
     </el-dialog>
   </div>

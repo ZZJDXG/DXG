@@ -8,9 +8,6 @@
 
     <el-dropdown v-if="!isProfilePage" class="right-area" @command="handleUserCommand">
       <div class="user-info">
-        <div class="logo">
-          <img src="../../assets/touxiang.jpg" alt="avatar" class="logo-img" />
-        </div>
         <el-icon><ArrowDown /></el-icon>
       </div>
       <template #dropdown>
@@ -102,20 +99,22 @@ const isProfilePage = computed(() => route.path === '/profile')
 
 const userStore = useUserStore()
 const username = computed(() => userStore.userInfo?.username || '用户')
-const tel = computed(() => userStore.userInfo?.tel || '')
 
 // 页面标题映射
 const pageTitleMap = {
+  '/': '首页',
   '/organization/department': '部门管理',
   '/organization/staffPosition': '职位管理',
   '/vehicle/info': '车辆信息',
   '/dormitory/info': '宿舍信息',
   '/hr/employeesInfo': '员工信息',
   '/settings': '系统设置',
-  '/mobile/signin': '签到',
+  '/mobile/signin': '打卡',
   '/mobile/functions': '功能',
   '/mobile/notifications': '通知',
-  '/scores/myscore': '我的评分',
+  '/mobile/addressList': '企业通讯录',
+  '/scores/lottery': '抽奖',
+  '/scores/myscore': '我的积分',
   '/salaries/mysalary': '我的工资'
 }
 
@@ -136,28 +135,28 @@ const resetPasswordForm = () => {
   passwordForm.value = { oldPassword: '', newPassword: '', confirmPassword: '' }
 }
 
-// function goBack() {
-//   // 检查是否有 token，有则返回主页，无则返回登录页
-//   const token = localStorage.getItem('token')
-//   if (token) {
-//     if (window.history.length > 1) {
-//       router.back()
-//     } else {
-//       window.location.href = '/'
-//     }
-//   } else {
-//     window.location.href = '/login'
-//   }
-// }
+function goBack() {
+  // 检查是否有 token，有则返回主页，无则返回登录页
+  const token = localStorage.getItem('token')
+  if (token) {
+    if (window.history.length > 1) {
+      router.back()
+    } else {
+      window.location.href = '/'
+    }
+  } else {
+    window.location.href = '/login'
+  }
+}
 
 const handleUserCommand = (command) => {
   switch (command) {
     case 'changePassword':
       dialogVisible.value = true
       break
-    // case 'logout':
-    //   handleLogout()
-    //   break
+    case 'logout':
+      handleLogout()
+      break
   }
 }
 
@@ -187,36 +186,17 @@ const handleChangePassword = async () => {
     ElMessage.error('新密码不能与旧密码相同')
     return
   }
-
+  
   // 此处可接入后端接口
+  ElMessage.success('密码已更新')
   dialogVisible.value = false
-  console.log('tel:', userStore.userInfo.tel)
-  // 何杰鸣 更改密码 后端接口
-  userStore.changePassword(userStore.userInfo.tel, {
-    oldPassword: passwordForm.value.oldPassword,
-    newPassword: passwordForm.value.newPassword
-  });
-    dialogVisible.value = false;
-    // 清空表单
-    passwordForm.value = {
-      oldPassword: '',
-      newPassword: '',
-      confirmPassword: ''
-    };
-    // 跳转到登录页
-    setTimeout(() => {
-      router.push('/login');
-    }, 1000);
+  resetPasswordForm()
 }
 
 const handleLogout = () => {
-  // 退出后需要清空所有用户信息
+  // 何杰鸣 退出后需要清空所有用户信息
   console.log('退出登录')
-  useUserStore.clearUserInfo();
-  console.log('退出登录')
-  ElMessage.success('已退出登录');
   router.push('/login')
-  //router.push('/login')
 }
 </script>
 
@@ -257,7 +237,6 @@ const handleLogout = () => {
   font-size: 18px;
   font-weight: 600;
   color: #000;
-  margin-left: 7.5%;
   margin-bottom: 1px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -276,11 +255,6 @@ const handleLogout = () => {
   padding: 8px 12px;
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.2);
-}
-
-.logo {
-  display: flex;
-  align-items: center;
 }
 
 .logo-img {

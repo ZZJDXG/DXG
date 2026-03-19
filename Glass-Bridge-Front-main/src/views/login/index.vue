@@ -2,7 +2,7 @@
   <div class="login-page" :class="{ 'mobile-mode': isMobile }">
     <div class="full-bg-gray"></div>
 
-    <div class="mobile-static-bubbles">
+    <div v-if="isMobile" class="mobile-static-bubbles">
       <span class="bubble b1"></span>
       <span class="bubble b2"></span>
       <span class="bubble b3"></span>
