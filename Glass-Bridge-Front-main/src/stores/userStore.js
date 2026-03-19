@@ -81,14 +81,14 @@ export const useUserStore = defineStore('user', () => {
   })
 }
 
-  const login = (data) => {
-    loginApi({
-    tel: data.username,
-    password: data.password
-  })
-    .then(res => {
-      console.log('here',res.data.code)
-      if (res.data.code==200) {
+  const login = async (data) => {
+    try {
+      const res = await loginApi({
+        tel: data.username,
+        password: data.password
+      })
+
+      if (res.data.code === 200) {
         localStorage.setItem('token', res.data.data.token)
         setUserInfo({
           staffID: res.data.data.user.staffID,
@@ -100,22 +100,18 @@ export const useUserStore = defineStore('user', () => {
           staffBirthday: res.data.data.user.staffBirthday,
         })
 
-        const deptID =Number(userInfo.value.staffDept)
-        console.log('fuck1',deptID)
-        console.log('userInfo.value', userInfo.value)
+        const deptID = Number(userInfo.value.staffDept)
         getUserSupportChannels(deptID)
         return true
       }
-      else{
-        console.log('fuck2')
-        ElMessage.error(res.data.message)
-      }
-    })
-    .catch(error => {
+
+      ElMessage.error(res.data.message || '登录失败')
+      return false
+    } catch (error) {
       console.log(error)
-      ElMessage.error(error)
-    })
-    return false
+      ElMessage.error(error?.message || '登录失败')
+      return false
+    }
   }
 
   // 清空用户信息

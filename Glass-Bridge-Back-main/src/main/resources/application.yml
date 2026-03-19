@@ -28,3 +28,7 @@ spring:
 mybatis:
   type-aliases-package: cn.yonyong.pojo
   mapper-locations: classpath:mapper/*.xml
+
+app:
+  cors:
+    allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:*}

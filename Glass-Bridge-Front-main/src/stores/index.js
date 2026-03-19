@@ -1,5 +1,6 @@
 // 导出所有store
 export { useMessageStore } from './messageStore'
+export { useMessageTypeStore } from './messageTypeStore'
 export { useTemplateStore } from './templateStore'
 export { useDepartmentStore } from './DepartmentStore'
 export { usePositionStore } from './PositionStore'

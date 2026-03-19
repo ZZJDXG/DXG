@@ -110,7 +110,7 @@ const resetPasswordVisible = ref(false)
 const resetForm = ref({username: ''})
 
 // 登录
-const login = () => {
+const login = async () => {
   if (!username.value || !password.value) {
     ElMessage.error('请输入用户名和密码')
     return
@@ -118,11 +118,13 @@ const login = () => {
 
   try {
     loading.value = true
-    userStore.login({ 
+    const ok = await userStore.login({ 
       username: username.value, 
       password: password.value 
     })
-    router.push('/index') // 或 '/index/dashboard'
+    if (ok) {
+      router.push('/index') // 或 '/index/dashboard'
+    }
   } catch (e) {
     ElMessage.error(e.message || '登录失败')
   } finally {

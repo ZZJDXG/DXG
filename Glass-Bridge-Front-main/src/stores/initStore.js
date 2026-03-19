@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { useMessageStore } from './messageStore'
+import { useMessageTypeStore } from './messageTypeStore'
 import { useTemplateStore } from './templateStore'
 import { useChannelStore } from './channelStore'
 import { ElMessage } from 'element-plus'
@@ -29,6 +30,7 @@ export const useInitStore = defineStore('init', () => {
       
       // 获取所有store实例
       const messageStore = useMessageStore()
+      const messageTypeStore = useMessageTypeStore()
       const templateStore = useTemplateStore()
       const channelStore = useChannelStore()
       
@@ -62,20 +64,6 @@ export const useInitStore = defineStore('init', () => {
           console.log('加载消息模板...')
           await new Promise(resolve => {
             templateStore.loadTemplates()
-            setTimeout(resolve, 300)
-          })
-          
-          // 系统对接数据
-          console.log('加载系统对接...')
-          await new Promise(resolve => {
-            systemStore.loadSystems()
-            setTimeout(resolve, 300)
-          })
-          
-          // 统计数据
-          console.log('加载统计数据...')
-          await new Promise(resolve => {
-            statisticsStore.loadStatistics()
             setTimeout(resolve, 300)
           })
           
